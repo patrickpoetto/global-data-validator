@@ -1,0 +1,21 @@
+# Data / outputs (never commit real datasets or generated reports)
+*.xlsx
+*.xls
+*.zip
+logs/
+reports/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+env/
+*.egg-info/
+
+# OS
+.DS_Store
+
+# Editors
+.vscode/
+.idea/

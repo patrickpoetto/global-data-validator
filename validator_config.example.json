@@ -1,0 +1,14 @@
+{
+  "primary_file": "path/to/primary_data.xlsx",
+  "secondary_file": "path/to/secondary_data.xlsx",
+  "primary_sheet": null,
+  "secondary_sheet": null,
+  "mapping_file": null,
+  "apply_mapping_to": "primary",
+  "run_deep_analysis": true,
+  "normalize_before_compare": true,
+  "normalize_numeric_strings": true,
+  "strip_leading_zeros_numeric": true,
+  "convert_dates": true,
+  "report_name": "demo"
+}

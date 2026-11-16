@@ -1,0 +1,9 @@
+order_id,customer,product,quantity,unit_price
+ORD-1001,Acme Widgets Ltd,Steel Bracket,12,4.50
+ORD-1002,Blue Sky Logistics,Rubber Gasket,50,0.85
+ORD-1003,Northwind Traders,Aluminum Rod,8,12.00
+ORD-1004,Acme Widgets Ltd,Steel Bracket,20,4.50
+ORD-1005,Fictional Foods Co,Packaging Tape,100,1.20
+ORD-1006,Blue Sky Logistics,Rubber Gasket,15,0.85
+ORD-1007,Northwind Traders,Aluminum Rod,30,12.00
+ORD-1008,Sample Supply Inc,Plastic Cap,60,0.35
