@@ -5,6 +5,10 @@
 logs/
 reports/
 
+# Exception: the blank demo report template shipped under templates/ is not
+# an output or real data, it's a tracked input the demo pipeline needs.
+!templates/report_base_template.xlsx
+
 # Python
 __pycache__/
 *.pyc

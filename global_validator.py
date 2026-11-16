@@ -1327,7 +1327,8 @@ class DataNormalizer:
         """
         Canonicalize numeric-like strings conservatively.
 
-        Example: "12.0" -> "12" to avoid false mismatches.
+        Examples: "12.0" -> "12", "4.50" -> "4.5" to avoid false mismatches
+        caused purely by trailing-zero formatting differences.
         """
         if not value:
             return None
@@ -1337,9 +1338,22 @@ class DataNormalizer:
         except Exception:
             return None
 
-        # Normalize clear integer-like float tokens.
-        if "." in candidate and number.is_integer():
-            return str(int(number))
+        if "." in candidate:
+            if number.is_integer():
+                # Normalize clear integer-like float tokens (e.g. "12.00" -> "12").
+                return str(int(number))
+            # Non-integer decimal: strip trailing zeros from the fractional part
+            # via string manipulation (not float formatting) to avoid introducing
+            # binary floating-point rounding artifacts (e.g. 0.1 + 0.2 issues).
+            sign = ""
+            unsigned = candidate
+            if unsigned.startswith(("+", "-")):
+                sign = "-" if unsigned[0] == "-" else ""
+                unsigned = unsigned[1:]
+            whole, _, frac = unsigned.partition(".")
+            whole = whole or "0"
+            frac = frac.rstrip("0")
+            return f"{sign}{whole}.{frac}" if frac else f"{sign}{whole}"
         # Optional: normalize pure-digit leading zeros (e.g. 0042 -> 42).
         if strip_leading_zeros_numeric and value.isdigit() and len(value) > 1:
             return value.lstrip("0") or "0"

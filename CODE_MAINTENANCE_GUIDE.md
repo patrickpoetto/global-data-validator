@@ -19,7 +19,7 @@ Reference for maintainers: high-level map of the codebase, then per-function stu
 | **Statistics** | Null/numeric/text summaries for exploratory logging. |
 | **Column mapping** | Optional rename map from external table. |
 | **Orchestration** | `run_validation` wires phases; `main` CLI. |
-| **Excel report (separate module)** | Parse text reports, fill `reports/report_base_template.xlsx`, write `report_<name>.xlsx`. |
+| **Excel report (separate module)** | Parse text reports, fill `templates/report_base_template.xlsx`, write `reports/report_<name>.xlsx`. |
 
 ---
 
@@ -153,7 +153,7 @@ Reference for maintainers: high-level map of the codebase, then per-function stu
 |----------|-------------------|
 | `_safe_report_segment` | Same filename sanitization as validator for `report_name`. |
 | `parse_args` | CLI: `--config`, optional overrides for summary/detail/template/output paths. |
-| `resolve_paths_from_config` | Reads JSON; defaults: `logs/summary_<name>.txt`, `logs/detail_<name>.txt`, `reports/report_base_template.xlsx`, `reports/report_<name>.xlsx`. |
+| `resolve_paths_from_config` | Reads JSON; defaults: `logs/summary_<name>.txt`, `logs/detail_<name>.txt`, `templates/report_base_template.xlsx`, `reports/report_<name>.xlsx`. |
 | `_to_int` | Parses integers with comma thousands from log text. |
 | `_dataset_file_label` | Chooses display file label (basename) for Excel headers. |
 | `parse_summary` | Regex-based parser for metrics and keys from summary log text. |
@@ -169,4 +169,4 @@ Reference for maintainers: high-level map of the codebase, then per-function stu
 
 1. **Behavior change in validation** → start from `run_validation` and the class handling that phase (`FileReader`, `DataNormalizer`, `ContentComparator`, etc.).
 2. **Output text format change** → update `write_detail_report` / logging in `ContentComparator` / `DeepContentReporter`, then adjust `parse_summary` / `parse_detail` in `report_cd.py` if the Excel pipeline must follow.
-3. **Excel layout change** → edit `reports/report_base_template.xlsx` and align cell addresses / merge logic inside `fill_template`.
+3. **Excel layout change** → edit `templates/report_base_template.xlsx` and align cell addresses / merge logic inside `fill_template`.

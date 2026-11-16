@@ -6,7 +6,7 @@ This script fills a fixed 2-sheet template:
 - High_Level_Overview
 - Dettaglio_Disallineamenti
 
-Default blank workbook: reports/report_base_template.xlsx (layout, colors, merges).
+Default blank workbook: templates/report_base_template.xlsx (layout, colors, merges).
 Override with --template-path or optional excel_template_path in validator_config.json.
 Default inputs: logs/summary_<report_name>.txt, logs/detail_<report_name>.txt;
 default output: reports/report_<report_name>.xlsx.
@@ -32,7 +32,8 @@ DETAIL_ROWS_EXPORT_CAP = 15_000
 DEFAULT_CONFIG_PATH = Path("validator_config.json")
 LOGS_DIR = Path("logs")
 REPORTS_DIR = Path("reports")
-REPORT_BASE_TEMPLATE = REPORTS_DIR / "report_base_template.xlsx"
+TEMPLATES_DIR = Path("templates")
+REPORT_BASE_TEMPLATE = TEMPLATES_DIR / "report_base_template.xlsx"
 
 
 def _safe_report_segment(report_name: str) -> str:
@@ -66,7 +67,7 @@ def parse_args() -> argparse.Namespace:
         "--template-path",
         type=Path,
         default=None,
-        help="Override: default is reports/report_base_template.xlsx (or excel_template_path in config)",
+        help="Override: default is templates/report_base_template.xlsx (or excel_template_path in config)",
     )
     parser.add_argument(
         "--output-path",

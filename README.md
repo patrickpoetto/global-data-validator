@@ -51,6 +51,8 @@ Python 3.12+ is the reference environment.
 ├── validator_config.example.json # Config template (copy to validator_config.json)
 ├── requirements.txt
 ├── sample_data/                  # Tiny synthetic CSVs for a quick demo
+├── templates/
+│   └── report_base_template.xlsx # Blank formatted workbook used by report_cd.py
 ├── CODE_MAINTENANCE_GUIDE.md      # Per-function map of the codebase, for maintainers
 └── LICENSE
 ```
@@ -64,9 +66,10 @@ Python 3.12+ is the reference environment.
    and compares every shared field. It writes
    `logs/summary_<report_name>.txt` and `logs/detail_<report_name>.txt`.
 2. `report_cd.py` parses those two text logs and fills an Excel template
-   (`reports/report_base_template.xlsx` — not included in this repo; supply
-   your own formatted workbook, or adapt `fill_template()` to a blank one)
-   to produce `reports/report_<report_name>.xlsx`.
+   (`templates/report_base_template.xlsx`, included in this repo — a plain
+   two-sheet workbook; swap in your own formatted version, or adapt
+   `fill_template()`, for different styling) to produce
+   `reports/report_<report_name>.xlsx`.
 3. `run_validation_and_report.py` just runs both steps back to back with the
    defaults from `validator_config.json`.
 
@@ -87,35 +90,63 @@ Edit `validator_config.json`:
 - optional: `mapping_file` (column rename table), sheet overrides, and the
   normalization flags described inline in the file
 
-## Example usage
+## Example usage — full walkthrough
 
 A tiny synthetic dataset is included under `sample_data/` — two CSVs
 describing the same set of fictional orders, with a few deliberate
 mismatches (a quantity that differs, a price that differs, a blank field,
-one row only in each file) so the diff output has something to show.
+one row only in each file) so the diff output has something to show. This
+walkthrough has been run end to end against that data; the steps and
+output below are real, not illustrative.
 
-```json
-{
-  "primary_file": "sample_data/primary.csv",
-  "secondary_file": "sample_data/secondary.csv",
-  "report_name": "demo"
-}
-```
+1. Set up the environment as in [Getting started](#getting-started) above.
 
-```bash
-python global_validator.py
-cat logs/summary_demo.txt
-cat logs/detail_demo.txt
-```
+2. Point the config at the sample data (edit `validator_config.json`):
 
-Or run the full pipeline (validation + Excel report, if you have a template
-workbook in place):
+   ```json
+   {
+     "primary_file": "sample_data/primary.csv",
+     "secondary_file": "sample_data/secondary.csv",
+     "report_name": "demo"
+   }
+   ```
 
-```bash
-python run_validation_and_report.py
-```
+3. Run the validator on its own to produce the text logs:
+
+   ```bash
+   python global_validator.py
+   cat logs/summary_demo.txt
+   cat logs/detail_demo.txt
+   ```
+
+   For this sample data, auto key detection picks `order_id`, finds 7
+   matching records (1 row only in primary, 1 only in secondary), and flags
+   3 field-level mismatches: a `product` that's blank on one side, a
+   `quantity` off by 2, and a `unit_price` off by 0.50.
+
+4. Build the Excel report from those logs (template already included under
+   `templates/`):
+
+   ```bash
+   python report_cd.py
+   ```
+
+   This produces `reports/report_demo.xlsx` with two sheets:
+   `High_Level_Overview` (row/column counts, match rate, a green
+   VALIDATED / red NOT VALIDATED badge) and `Dettaglio_Disallineamenti`
+   (the non-common keys plus one bordered block per mismatched field,
+   each showing the key, primary value, and secondary value).
+
+5. Or run both steps in one command:
+
+   ```bash
+   python run_validation_and_report.py
+   ```
 
 Override the config path on any script with `--config /path/to/file.json`.
+To use your own formatted workbook instead of the included plain template,
+set `"excel_template_path"` in `validator_config.json` or pass
+`--template-path` to `report_cd.py`.
 
 ## Notes
 
